@@ -1,4 +1,4 @@
-# 1. Base Image
+# 1. Base Image 
 # Using a PyTorch image that supports CUDA 12.1 and Python 3.10.x
 # Example: pytorch/pytorch:2.2.1-cuda12.1-cudnn8-runtime (Python 3.10.12)
 # Check Docker Hub for the latest appropriate pytorch/pytorch image compatible with Python 3.10 and CUDA 12.1
