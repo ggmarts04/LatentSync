@@ -10,7 +10,7 @@ from pathlib import Path
 class Audio2Feature:
     def __init__(
         self,
-        model_path="checkpoints/whisper/tiny.pt",
+        model_path="tiny",
         device=None,
         audio_embeds_cache_dir=None,
         num_frames=16,
