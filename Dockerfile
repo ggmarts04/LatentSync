@@ -35,7 +35,7 @@ COPY requirements.txt .
 # 7. Install Python Dependencies
 # The --extra-index-url is part of the requirements.txt content itself, so pip should pick it up.
 # If not, it needs to be specified here. Assuming it's handled if present in the file.
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt hf_transfer
 
 # 8. Copy Project Files
 COPY . .
