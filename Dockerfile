@@ -10,40 +10,42 @@ ENV HF_HUB_ENABLE_HF_TRANSFER=1
 
 # 3. System Packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    software-properties-common \
     libgl1-mesa-glx \
     curl \
     build-essential \
     python3-dev \
     cmake \
- && add-apt-repository ppa:savoury1/ffmpeg4 -y \
- && apt-get update \
- && apt-get install -y --no-install-recommends ffmpeg \
- && ffmpeg -version \
  && rm -rf /var/lib/apt/lists/*
 
-# 4. Install pget
+# 4. Install static ffmpeg (with libx264, crf, etc.)
+RUN curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz \
+    | tar -xJ && \
+    cp ffmpeg-*-amd64-static/ffmpeg /usr/local/bin/ffmpeg && \
+    cp ffmpeg-*-amd64-static/ffprobe /usr/local/bin/ffprobe && \
+    chmod +x /usr/local/bin/ffmpeg /usr/local/bin/ffprobe && \
+    ffmpeg -version
+
+# 5. Install pget
 RUN curl -o /usr/local/bin/pget -L "https://github.com/replicate/pget/releases/download/v0.10.2/pget_linux_x86_64" \
  && chmod +x /usr/local/bin/pget
 
-# 5. Set up Working Directory
+# 6. Set up Working Directory
 WORKDIR /app
 
-# 6. Copy Requirements
+# 7. Copy Requirements
 COPY requirements.txt .
 
-# 7. Install Python Dependencies
+# 8. Install Python Dependencies
 RUN pip install --no-cache-dir -r requirements.txt hf_transfer
 
-# 8. Copy Project Files
+# 9. Copy Project Files
 COPY . .
 
-# 9. Expose Port (optional for serverless, but good practice)
+# 10. Expose Port (optional for serverless, but good practice)
 EXPOSE 8080
 
-# 10. Make setup_env.sh executable and run it
-RUN chmod +x setup_env.sh
-RUN ./setup_env.sh
+# 11. Run setup_env.sh if it exists
+RUN chmod +x setup_env.sh && ./setup_env.sh
 
 # 11. Start the RunPod handler
 CMD ["python", "runpod_handler.py"]
