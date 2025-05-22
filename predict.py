@@ -27,15 +27,24 @@ class Predictor(BasePredictor):
 
         # Soft links for the auxiliary models
         os.system("mkdir -p ~/.cache/torch/hub/checkpoints")
-        os.system(
-            "ln -s $(pwd)/checkpoints/auxiliary/2DFAN4-cd938726ad.zip ~/.cache/torch/hub/checkpoints/2DFAN4-cd938726ad.zip"
-        )
-        os.system(
-            "ln -s $(pwd)/checkpoints/auxiliary/s3fd-619a316812.pth ~/.cache/torch/hub/checkpoints/s3fd-619a316812.pth"
-        )
-        os.system(
-            "ln -s $(pwd)/checkpoints/auxiliary/vgg16-397923af.pth ~/.cache/torch/hub/checkpoints/vgg16-397923af.pth"
-        )
+        
+        link_path_1 = os.path.expanduser("~/.cache/torch/hub/checkpoints/2DFAN4-cd938726ad.zip")
+        if not os.path.exists(link_path_1):
+            os.system(
+                "ln -s $(pwd)/checkpoints/auxiliary/2DFAN4-cd938726ad.zip ~/.cache/torch/hub/checkpoints/2DFAN4-cd938726ad.zip"
+            )
+        
+        link_path_2 = os.path.expanduser("~/.cache/torch/hub/checkpoints/s3fd-619a316812.pth")
+        if not os.path.exists(link_path_2):
+            os.system(
+                "ln -s $(pwd)/checkpoints/auxiliary/s3fd-619a316812.pth ~/.cache/torch/hub/checkpoints/s3fd-619a316812.pth"
+            )
+            
+        link_path_3 = os.path.expanduser("~/.cache/torch/hub/checkpoints/vgg16-397923af.pth")
+        if not os.path.exists(link_path_3):
+            os.system(
+                "ln -s $(pwd)/checkpoints/auxiliary/vgg16-397923af.pth ~/.cache/torch/hub/checkpoints/vgg16-397923af.pth"
+            )
 
     def predict(
         self,

@@ -109,7 +109,7 @@ if __name__ == '__main__':
     mock_event = {
         "input": {
             "video_url": "https://raw.githubusercontent.com/runpod-workers/worker-template/main/README.md", # Replace with actual small video/text file URL for testing download
-            "audio_url": "https://raw.githubusercontent.com/runpod-workers/worker-template/main/CHANGELOG.md", # Replace with actual small audio/text file URL for testing download
+            "audio_url": "https://raw.githubusercontent.com/runpod-workers/worker-template/main/README.md", # Replace with actual small audio/text file URL for testing download
             "guidance_scale": 2.0,
             "inference_steps": 20,
             "seed": 42
