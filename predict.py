@@ -22,8 +22,7 @@ class Predictor(BasePredictor):
     def setup(self) -> None:
         """Load the model into memory to make running multiple predictions efficient"""
         # Download the model weights
-        if not os.path.exists(MODEL_CACHE):
-            download_weights(MODEL_URL, MODEL_CACHE)
+        download_weights(MODEL_URL, MODEL_CACHE)
 
         # Soft links for the auxiliary models
         os.system("mkdir -p ~/.cache/torch/hub/checkpoints")
@@ -66,7 +65,16 @@ class Predictor(BasePredictor):
         output_path = "/tmp/video_out.mp4"
 
         # Run the following command:
-        os.system(
-            f"python -m scripts.inference --unet_config_path {config_path} --inference_ckpt_path {ckpt_path} --guidance_scale {str(guidance_scale)} --video_path {video_path} --audio_path {audio_path} --video_out_path {output_path} --seed {seed} --inference_steps {inference_steps}"
-        )
+        command = [
+            "python", "-m", "scripts.inference",
+            "--unet_config_path", config_path,
+            "--inference_ckpt_path", ckpt_path,
+            "--guidance_scale", str(guidance_scale),
+            "--video_path", video_path,
+            "--audio_path", audio_path,
+            "--video_out_path", output_path,
+            "--seed", str(seed),
+            "--inference_steps", str(inference_steps)
+        ]
+        subprocess.check_call(command)
         return Path(output_path)
