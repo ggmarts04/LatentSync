@@ -47,4 +47,4 @@ EXPOSE 8080
 # This assumes 'runpod_handler.py' contains a function 'handler'
 # and that the 'runpod' Python package provides the serverless entry point.
 # The user should verify this CMD with RunPod's documentation.
-CMD ["python", "-m", "runpod.serverless", "runpod_handler.handler"]
+CMD ["python", "runpod_handler.py"]
