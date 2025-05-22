@@ -15,6 +15,7 @@ ENV HF_HUB_ENABLE_HF_TRANSFER=1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     libgl1-mesa-glx \
+    curl \
     # other system dependencies from cog.yaml if any were missed (libgl1 is listed)
  && rm -rf /var/lib/apt/lists/*
 
