@@ -35,7 +35,7 @@ COPY requirements.txt .
 # 7. Install Python Dependencies
 # The --extra-index-url is part of the requirements.txt content itself, so pip should pick it up.
 # If not, it needs to be specified here. Assuming it's handled if present in the file.
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt hf_transfer
 
 # 8. Copy Project Files
 COPY . .
@@ -43,8 +43,12 @@ COPY . .
 # 9. Expose Port (Good practice, RunPod might manage ports differently)
 EXPOSE 8080
 
+# Make setup_env.sh executable and run it
+RUN chmod +x setup_env.sh
+RUN ./setup_env.sh
+
 # 10. Command to start the RunPod worker
 # This assumes 'runpod_handler.py' contains a function 'handler'
 # and that the 'runpod' Python package provides the serverless entry point.
 # The user should verify this CMD with RunPod's documentation.
-CMD ["python", "-m", "runpod.serverless", "runpod_handler.handler"]
+CMD ["conda", "run", "-n", "latentsync", "--no-capture-output", "python", "runpod_handler.py"]
