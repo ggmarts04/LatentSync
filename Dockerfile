@@ -43,6 +43,10 @@ COPY . .
 # 9. Expose Port (Good practice, RunPod might manage ports differently)
 EXPOSE 8080
 
+# Make setup_env.sh executable and run it
+RUN chmod +x setup_env.sh
+RUN ./setup_env.sh
+
 # 10. Command to start the RunPod worker
 # This assumes 'runpod_handler.py' contains a function 'handler'
 # and that the 'runpod' Python package provides the serverless entry point.
