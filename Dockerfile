@@ -51,4 +51,4 @@ RUN ./setup_env.sh
 # This assumes 'runpod_handler.py' contains a function 'handler'
 # and that the 'runpod' Python package provides the serverless entry point.
 # The user should verify this CMD with RunPod's documentation.
-CMD ["python", "runpod_handler.py"]
+CMD ["conda", "run", "-n", "latentsync", "--no-capture-output", "python", "runpod_handler.py"]
