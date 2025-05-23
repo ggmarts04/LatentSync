@@ -3,6 +3,8 @@ import subprocess
 import runpod
 import os
 import tempfile
+import requests
+import uuid
 from predict import Predictor # Assuming Predictor is in predict.py
 
 # Global predictor instance to reuse (RunPod might keep workers warm)
@@ -79,12 +81,51 @@ def handler(event):
             
             output_path_str = str(output_path_object) # Convert Path object to string
             print(f"Prediction successful. Output at: {output_path_str}")
-            print("HANDLER: Processing complete, returning output.")
 
-            # RunPod typically handles uploading the file if a path is returned.
-            # Alternatively, one might upload to S3 and return the S3 URL.
-            # For now, just returning the path as per Cog's behavior.
-            return {"output_path": output_path_str}
+            # --- Start BunnyCDN Upload Logic ---
+            bunny_access_key = os.environ.get("BUNNY_ACCESS_KEY")
+            if not bunny_access_key:
+                print("HANDLER: Error - BUNNY_ACCESS_KEY environment variable not set.")
+                return {"error": "BunnyCDN Access Key not configured on server."}
+
+            local_file_path = output_path_str # This is '/tmp/video_out.mp4'
+            
+            # Generate a unique filename for cloud storage to prevent overwrites
+            unique_filename = f"{uuid.uuid4()}.mp4"
+            
+            bunny_storage_url = f"https://storage.bunnycdn.com/zockto/videos/{unique_filename}"
+            public_download_url = f"https://zockto.b-cdn.net/videos/{unique_filename}"
+
+            headers = {
+                "AccessKey": bunny_access_key,
+                "Content-Type": "video/mp4"
+            }
+
+            try:
+                print(f"HANDLER: Uploading {local_file_path} to BunnyCDN at {bunny_storage_url}...")
+                with open(local_file_path, 'rb') as f:
+                    video_data = f.read()
+                
+                response = requests.put(bunny_storage_url, headers=headers, data=video_data)
+                
+                if response.status_code == 201:
+                    print(f"HANDLER: Successfully uploaded to BunnyCDN. Public URL: {public_download_url}")
+                    # Replace the old return statement with this one
+                    # The original 'print("HANDLER: Processing complete, returning output.")' will be replaced by the one below
+                    print("HANDLER: Processing and upload complete, returning public URL.")
+                    return {"output_url": public_download_url}
+                else:
+                    error_message = f"HANDLER: Error uploading to BunnyCDN. Status: {response.status_code}, Response: {response.text}"
+                    print(error_message)
+                    return {"error": "Failed to upload video to BunnyCDN.", "details": response.text}
+
+            except FileNotFoundError:
+                print(f"HANDLER: Error - Local video file not found at {local_file_path} for upload.")
+                return {"error": "Output video file not found for upload."}
+            except Exception as upload_e:
+                print(f"HANDLER: An unexpected error occurred during BunnyCDN upload: {str(upload_e)}")
+                return {"error": f"An unexpected error occurred during video upload: {str(upload_e)}"}
+            # --- End BunnyCDN Upload Logic ---
 
     except Exception as e:
         print(f"Error during prediction: {e}")
