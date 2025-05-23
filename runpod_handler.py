@@ -1,3 +1,4 @@
+import sys
 import subprocess
 import os
 import tempfile
@@ -77,6 +78,7 @@ def handler(event):
             
             output_path_str = str(output_path_object) # Convert Path object to string
             print(f"Prediction successful. Output at: {output_path_str}")
+            print("HANDLER: Processing complete, returning output.")
 
             # RunPod typically handles uploading the file if a path is returned.
             # Alternatively, one might upload to S3 and return the S3 URL.
@@ -85,6 +87,7 @@ def handler(event):
 
     except Exception as e:
         print(f"Error during prediction: {e}")
+        print(f"HANDLER: Exception caught ({e}), returning error.")
         return {"error": str(e)}
 
 if __name__ == '__main__':
@@ -135,3 +138,4 @@ if __name__ == '__main__':
 
     result = handler(mock_event)
     print(f"Local test run result: {result}")
+    sys.exit(0)
