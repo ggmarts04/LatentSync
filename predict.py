@@ -7,22 +7,28 @@ import time
 import subprocess
 
 MODEL_CACHE = "checkpoints"
-MODEL_URL = "https://weights.replicate.delivery/default/chunyu-li/LatentSync/model.tar"
-
-
-def download_weights(url, dest):
-    start = time.time()
-    print("downloading url: ", url)
-    print("downloading to: ", dest)
-    subprocess.check_call(["pget", "-xf", url, dest], close_fds=False)
-    print("downloading took: ", time.time() - start)
 
 
 class Predictor(BasePredictor):
     def setup(self) -> None:
         """Load the model into memory to make running multiple predictions efficient"""
         # Download the model weights
-        download_weights(MODEL_URL, MODEL_CACHE)
+        print("Downloading model files from Hugging Face Hub (ByteDance/LatentSync-1.5)...")
+        model_cache_dir = "checkpoints" # This is MODEL_CACHE
+        try:
+            subprocess.check_call([
+                "huggingface-cli", "download", "ByteDance/LatentSync-1.5",
+                "--local-dir", model_cache_dir,
+                "--local-dir-use-symlinks", "False", # Ensure actual files are downloaded
+                "--exclude", "*.git*", "*.md" # Exclude .git files/folders and markdown files
+            ], close_fds=False) # Mimic close_fds from previous pget call
+            print("Model files downloaded successfully using huggingface-cli.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error downloading model files using huggingface-cli: {e}")
+            raise # Re-raise the exception to stop the setup if download fails
+        except FileNotFoundError:
+            print("Error: huggingface-cli command not found. Ensure it is installed and in PATH.")
+            raise # Re-raise the exception
 
         # Soft links for the auxiliary models
         os.system("mkdir -p ~/.cache/torch/hub/checkpoints")
