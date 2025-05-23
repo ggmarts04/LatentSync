@@ -107,12 +107,12 @@ if __name__ == '__main__':
 
     # Mock event
     mock_event = {
-         "input": {
-            "video_url": "https://ljcziwpohceaacdreugx.supabase.co/storage/v1/object/public/creator_files/videos/41b6066f-df3c-42ca-a655-4a6bf512eea4/1190ae66-6924-4fa1-82c7-41ea4911ceef.mp4", # Replace with actual small video/text file URL for testing download
-            "audio_url": "https://zockto.b-cdn.net/voices/41b6066f-df3c-42ca-a655-4a6bf512eea4/9797a068-44d6-453d-b3ef-535309a8ef48.wav", # Replace with actual small audio/text file URL for testing download
+        "input": {
+            "video_url": "https://raw.githubusercontent.com/runpod-workers/worker-template/main/README.md", # Replace with actual small video/text file URL for testing download
+            "audio_url": "https://raw.githubusercontent.com/runpod-workers/worker-template/main/README.md", # Replace with actual small audio/text file URL for testing download
             "guidance_scale": 2.0,
             "inference_steps": 20,
-            "seed": 0
+            "seed": 42
         }
     }
     
