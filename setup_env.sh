@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Create a new conda environment
 conda create -y -n latentsync python=3.10.13
