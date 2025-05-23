@@ -96,46 +96,46 @@ if __name__ == '__main__':
     # You would need to have pget installed and model weights accessible.
     # And ensure predict.py and its dependencies are in PYTHONPATH.
     
-    print("Attempting local test run of the handler...")
+    # print("Attempting local test run of the handler...")
     
-    # Create dummy files for Predictor.setup() if it expects them
-    # This setup part is complex due to symlinks in original predict.py
-    # For a simple test, we might need to mock parts of Predictor.setup() or ensure files exist
-    if not os.path.exists("checkpoints/auxiliary"):
-        os.makedirs("checkpoints/auxiliary", exist_ok=True)
-        # Create dummy files that setup() tries to link
-        open("checkpoints/auxiliary/2DFAN4-cd938726ad.zip", 'a').close()
-        open("checkpoints/auxiliary/s3fd-619a316812.pth", 'a').close()
-        open("checkpoints/auxiliary/vgg16-397923af.pth", 'a').close()
+    # # Create dummy files for Predictor.setup() if it expects them
+    # # This setup part is complex due to symlinks in original predict.py
+    # # For a simple test, we might need to mock parts of Predictor.setup() or ensure files exist
+    # if not os.path.exists("checkpoints/auxiliary"):
+    #     os.makedirs("checkpoints/auxiliary", exist_ok=True)
+    #     # Create dummy files that setup() tries to link
+    #     open("checkpoints/auxiliary/2DFAN4-cd938726ad.zip", 'a').close()
+    #     open("checkpoints/auxiliary/s3fd-619a316812.pth", 'a').close()
+    #     open("checkpoints/auxiliary/vgg16-397923af.pth", 'a').close()
 
-    # Mock event
-    mock_event = {
-         "input": {
-            "video_url": "https://ljcziwpohceaacdreugx.supabase.co/storage/v1/object/public/creator_files/videos/41b6066f-df3c-42ca-a655-4a6bf512eea4/1190ae66-6924-4fa1-82c7-41ea4911ceef.mp4", # Replace with actual small video/text file URL for testing download
-            "audio_url": "https://zockto.b-cdn.net/voices/41b6066f-df3c-42ca-a655-4a6bf512eea4/9797a068-44d6-453d-b3ef-535309a8ef48.wav", # Replace with actual small audio/text file URL for testing download
-            "guidance_scale": 2.0,
-            "inference_steps": 20,
-            "seed": 0
-        }
-    }
+    # # Mock event
+    # mock_event = {
+    #      "input": {
+    #         "video_url": "https://ljcziwpohceaacdreugx.supabase.co/storage/v1/object/public/creator_files/videos/41b6066f-df3c-42ca-a655-4a6bf512eea4/1190ae66-6924-4fa1-82c7-41ea4911ceef.mp4", # Replace with actual small video/text file URL for testing download
+    #         "audio_url": "https://zockto.b-cdn.net/voices/41b6066f-df3c-42ca-a655-4a6bf512eea4/9797a068-44d6-453d-b3ef-535309a8ef48.wav", # Replace with actual small audio/text file URL for testing download
+    #         "guidance_scale": 2.0,
+    #         "inference_steps": 20,
+    #         "seed": 0
+    #     }
+    # }
     
-    # Note: The actual model prediction won't work with dummy md files.
-    # This local test primarily checks the handler logic, input parsing, and download.
-    # To fully test, you'd need valid small video/audio URLs and the model itself.
-    # The Predictor().setup() will try to download actual model weights if MODEL_CACHE doesn't exist.
+    # # Note: The actual model prediction won't work with dummy md files.
+    # # This local test primarily checks the handler logic, input parsing, and download.
+    # # To fully test, you'd need valid small video/audio URLs and the model itself.
+    # # The Predictor().setup() will try to download actual model weights if MODEL_CACHE doesn't exist.
     
-    # Before running local test, ensure pget is installed:
-    # Check if pget is installed, if not, download it (Linux x86_64 example)
-    if subprocess.run(["which", "pget"], capture_output=True).returncode != 0:
-        print("pget not found. Attempting to download pget...")
-        pget_url = "https://github.com/replicate/pget/releases/download/v0.10.2/pget_linux_x86_64"
-        pget_dest = "./pget" # Download to current dir for local test
-        subprocess.check_call(["curl", "-L", pget_url, "-o", pget_dest])
-        subprocess.check_call(["chmod", "+x", pget_dest])
-        # Update PATH for this script's execution or use ./pget
-        os.environ["PATH"] = os.getcwd() + os.pathsep + os.environ["PATH"]
-        print("pget downloaded and added to PATH for this session.")
+    # # Before running local test, ensure pget is installed:
+    # # Check if pget is installed, if not, download it (Linux x86_64 example)
+    # if subprocess.run(["which", "pget"], capture_output=True).returncode != 0:
+    #     print("pget not found. Attempting to download pget...")
+    #     pget_url = "https://github.com/replicate/pget/releases/download/v0.10.2/pget_linux_x86_64"
+    #     pget_dest = "./pget" # Download to current dir for local test
+    #     subprocess.check_call(["curl", "-L", pget_url, "-o", pget_dest])
+    #     subprocess.check_call(["chmod", "+x", pget_dest])
+    #     # Update PATH for this script's execution or use ./pget
+    #     os.environ["PATH"] = os.getcwd() + os.pathsep + os.environ["PATH"]
+    #     print("pget downloaded and added to PATH for this session.")
 
-    result = handler(mock_event)
-    print(f"Local test run result: {result}")
-    sys.exit(0)
+    # result = handler(mock_event)
+    # print(f"Local test run result: {result}")
+    pass
