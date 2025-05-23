@@ -1,5 +1,5 @@
 # Prediction interface for Cog ⚙️
-# https://cog.run/python
+# https://cog.run/python 
 
 from cog import BasePredictor, Input, Path
 import os
