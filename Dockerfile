@@ -46,6 +46,7 @@ COPY requirements.txt .
 # The --extra-index-url is part of the requirements.txt content itself, so pip should pick it up.
 # If not, it needs to be specified here. Assuming it's handled if present in the file.
 RUN pip install --no-cache-dir -r requirements.txt hf_transfer
+RUN pip install huggingface_hub --quiet
 
 # 8. Copy Project Files
 COPY . .
