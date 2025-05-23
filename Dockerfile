@@ -13,14 +13,22 @@ ENV HF_HUB_ENABLE_HF_TRANSFER=1
 
 # 3. System Packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
     libgl1-mesa-glx \
     curl \
+    xz-utils \
     build-essential \
     python3-dev \
     cmake \
     # other system dependencies from cog.yaml if any were missed (libgl1 is listed)
  && rm -rf /var/lib/apt/lists/*
+
+# Install static ffmpeg
+RUN curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ffmpeg-release-amd64-static.tar.xz && \
+    mkdir -p /opt/ffmpeg && \
+    tar -xf ffmpeg-release-amd64-static.tar.xz -C /opt/ffmpeg --strip-components=1 && \
+    rm ffmpeg-release-amd64-static.tar.xz && \
+    ln -s /opt/ffmpeg/ffmpeg /usr/local/bin/ffmpeg && \
+    ln -s /opt/ffmpeg/ffprobe /usr/local/bin/ffprobe
 
 # 4. Install pget
 RUN curl -o /usr/local/bin/pget -L "https://github.com/replicate/pget/releases/download/v0.10.2/pget_linux_x86_64" \
