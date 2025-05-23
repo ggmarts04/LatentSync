@@ -26,3 +26,4 @@ onnxruntime-gpu==1.21.0
 runpod
 boto3
 cog
+requests
