@@ -15,6 +15,7 @@ data:
   mask: fix_mask
   audio_sample_rate: 16000
   video_fps: 25
+  audio_feat_length: [2, 2]
 
 ckpt:
   resume_ckpt_path: checkpoints/latentsync_unet.pt
