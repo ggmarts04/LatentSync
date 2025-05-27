@@ -1,5 +1,5 @@
 # Prediction interface for Cog ⚙️
-# https://cog.run/python 
+# https://cog.run/python
 
 from cog import BasePredictor, Input, Path
 import os
@@ -7,28 +7,23 @@ import time
 import subprocess
 
 MODEL_CACHE = "checkpoints"
+MODEL_URL = "https://weights.replicate.delivery/default/chunyu-li/LatentSync/model.tar"
+
+
+def download_weights(url, dest):
+    start = time.time()
+    print("downloading url: ", url)
+    print("downloading to: ", dest)
+    subprocess.check_call(["pget", "-xf", url, dest], close_fds=False)
+    print("downloading took: ", time.time() - start)
 
 
 class Predictor(BasePredictor):
     def setup(self) -> None:
         """Load the model into memory to make running multiple predictions efficient"""
         # Download the model weights
-        print("Downloading model files from Hugging Face Hub (ByteDance/LatentSync-1.5)...")
-        model_cache_dir = "checkpoints" # This is MODEL_CACHE
-        try:
-            subprocess.check_call([
-                "huggingface-cli", "download", "ByteDance/LatentSync-1.5",
-                "--local-dir", model_cache_dir,
-                "--local-dir-use-symlinks", "False", # Ensure actual files are downloaded
-                "--exclude", "*.git*", "*.md" # Exclude .git files/folders and markdown files
-            ], close_fds=False) # Mimic close_fds from previous pget call
-            print("Model files downloaded successfully using huggingface-cli.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error downloading model files using huggingface-cli: {e}")
-            raise # Re-raise the exception to stop the setup if download fails
-        except FileNotFoundError:
-            print("Error: huggingface-cli command not found. Ensure it is installed and in PATH.")
-            raise # Re-raise the exception
+        if not os.path.exists(MODEL_CACHE): # MODEL_CACHE is "checkpoints"
+            download_weights(MODEL_URL, MODEL_CACHE)
 
         # Soft links for the auxiliary models
         os.system("mkdir -p ~/.cache/torch/hub/checkpoints")
@@ -55,7 +50,7 @@ class Predictor(BasePredictor):
         self,
         video: Path = Input(description="Input video", default=None),
         audio: Path = Input(description="Input audio to ", default=None),
-        guidance_scale: float = Input(description="Guidance scale", ge=1, le=3, default=2.0),
+        guidance_scale: float = Input(description="Guidance scale", ge=0, le=10, default=1.0),
         inference_steps: int = Input(description="Inference steps", ge=20, le=50, default=20),
         seed: int = Input(description="Set to 0 for Random seed", default=0),
     ) -> Path:
@@ -66,7 +61,7 @@ class Predictor(BasePredictor):
 
         video_path = str(video)
         audio_path = str(audio)
-        config_path = "configs/unet/stage2.yaml"
+        config_path = "configs/unet/replicate_config.yaml"
         ckpt_path = "checkpoints/latentsync_unet.pt"
         output_path = "/tmp/video_out.mp4"
 
