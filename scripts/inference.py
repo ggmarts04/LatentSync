@@ -79,6 +79,7 @@ def main(config, args):
 
     print(f"Initial seed: {torch.initial_seed()}")
 
+    mask_path_to_use = getattr(config.data, "mask_image_path", "latentsync/utils/mask.png")
     pipeline(
         video_path=args.video_path,
         audio_path=args.audio_path,
@@ -90,7 +91,7 @@ def main(config, args):
         weight_dtype=dtype,
         width=config.data.resolution,
         height=config.data.resolution,
-        mask_image_path=config.data.mask_image_path,
+        mask_image_path=mask_path_to_use,
     )
 
 
